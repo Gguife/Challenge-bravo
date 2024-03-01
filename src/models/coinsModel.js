@@ -16,4 +16,6 @@ export const coinsModel = db.define('coins',{
     type: DataTypes.STRING,
     allowNull: false
   }
+},{
+  timestamps: false
 });
