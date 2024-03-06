@@ -24,6 +24,4 @@ async function getExchangeRates(){
   }
 }
 
-getExchangeRates();
-
 export default getExchangeRates;
