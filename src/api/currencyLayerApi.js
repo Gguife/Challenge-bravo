@@ -1,11 +1,13 @@
 import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
 
-const BASE_URL = 'http://economia.awesomeapi.com.br';
-const currencies = 'USD-BRL,BRL-USD,USD-EUR,EUR-USD,BTC-USD,BRL-EUR,EUR-BRL,BTC-BRL,BTC-EUR';
+const BASE_URL = process.env.API_URL;
+const CURRENCIES = process.env.API_CURRENCIES;
 
 async function getExchangeRates(){
   try{
-    const response = await axios.get(`${BASE_URL}/json/last/${currencies}`);
+    const response = await axios.get(`${BASE_URL}/json/last/${CURRENCIES}`);
 
     if(response.status == 200){
       const exchangeRates = response.data;
@@ -16,12 +18,12 @@ async function getExchangeRates(){
         ask: rate.ask
       }));
       console.log('Exchange rates for selected currencies:',currencyRates);
-    }else{
-      console.error('Error getting exchange rates:', response.statusText);
     }
   }catch(error){
     console.log('Error when making API request:', error.message);
   }
 }
+
+getExchangeRates();
 
 export default getExchangeRates;
