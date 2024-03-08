@@ -3,11 +3,10 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const BASE_URL = process.env.API_URL;
-const CURRENCIES = process.env.API_CURRENCIES;
 
-async function getExchangeRates(){
+async function getExchangeRates(coins){
   try{
-    const response = await axios.get(`${BASE_URL}/json/last/${CURRENCIES}`);
+    const response = await axios.get(`${BASE_URL}/last/${coins}`);
 
     if(response.status == 200){
       const exchangeRates = response.data;
@@ -18,11 +17,12 @@ async function getExchangeRates(){
         ask: rate.ask
       }));
       console.log('Exchange rates for selected currencies:',currencyRates);
+
+      return currencyRates;
     }
   }catch(error){
     console.log('Error when making API request:', error.message);
   }
 }
-
 
 export default getExchangeRates;
