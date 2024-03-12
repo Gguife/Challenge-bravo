@@ -2,7 +2,7 @@ import getExchangeRates from "../api/currencyLayerApi.js";
 import { verifyBusinessOperation } from "./businessOperation.js";
 
 
-const convertCurrency = async (amount, fromCurrency, toCurrency) =>{
+const convertCurrency = async (fromCurrency, toCurrency, amount) =>{
   try{
     // Dados da API pública
     const exchangeRates = await getExchangeRates(`${fromCurrency}-${toCurrency}`);
@@ -18,11 +18,8 @@ const convertCurrency = async (amount, fromCurrency, toCurrency) =>{
 
     const rateBid = toRate.bid;
     
-
     // Lógica de conversão das moedas
-    const convertAmount = amount / rateBid;
-
-    console.log(convertAmount)
+    const convertAmount = (amount * rateBid).toFixed(2);
 
     //retornarndo lógica
     return convertAmount; 
@@ -32,25 +29,23 @@ const convertCurrency = async (amount, fromCurrency, toCurrency) =>{
   }
 }
 
-const execultCurrencyOperation = async (req, res) =>{
-  try{
-    // Verificar se as moedas são suportadas antes de executar a opração
+const execultCurrencyOperation = async (req, res) => {
+  try {
+    
     await verifyBusinessOperation(req, res);
-    // Extraindo dados da requisição
-    const {amount, fromCurrency, toCurrency} = req.body;
 
-    // Verificar se as moedas são iguais
-    if(fromCurrency === toCurrency){
-      throw new Error('Coins are the same!');
+    const { fromCurrency, toCurrency, amount } = req.body;
+    if (fromCurrency === toCurrency) {
+      return res.status(400).json({ error: 'Coins are the same!' });
     }
-    
-    // Chamar a função de conversão de moedas
-    await convertCurrency(amount, fromCurrency, toCurrency);
-    
-  }catch(error){
-    console.error(error);
-    throw new Error('Error when executing coins operation!');
-  }
-}
 
-export {execultCurrencyOperation};
+    const convertedAmount = await convertCurrency(fromCurrency, toCurrency, amount);
+  
+    return res.status(200).json({ convertedAmount });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Error when executing coins operation!' });
+  }
+};
+
+export { execultCurrencyOperation };
