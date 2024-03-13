@@ -31,16 +31,20 @@ const convertCurrency = async (fromCurrency, toCurrency, amount) =>{
 
 const execultCurrencyOperation = async (req, res) => {
   try {
-    
-    await verifyBusinessOperation(req, res);
+    //Verificando as moedas sao compativeis com nosso sistema
+    const suportedCoins = await verifyBusinessOperation(req, res);
+    if(suportedCoins.error){
+      return res.status(400).json({error: suportedCoins.error})
+    }
 
+    
     const { fromCurrency, toCurrency, amount } = req.body;
     if (fromCurrency === toCurrency) {
       return res.status(400).json({ error: 'Coins are the same!' });
     }
-
+    
     const convertedAmount = await convertCurrency(fromCurrency, toCurrency, amount);
-  
+    
     return res.status(200).json({ convertedAmount });
   } catch (error) {
     console.error(error);
