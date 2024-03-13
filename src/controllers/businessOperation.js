@@ -5,15 +5,15 @@ import getExchangeRates from "../api/currencyLayerApi.js";
 export const verifyBusinessOperation = async (req, res) => {
   try {  
     // Obtendo moedas que queremos na solicitação
-    const { currency1, currency2 } = req.query;
+    const { fromCurrency, toCurrency } = req.body;
 
     // Verificando se as moedas realmente foram fornecidas
-    if (!currency1 || !currency2) {
+    if (!fromCurrency || !toCurrency) {
       return { error: 'Currency parameters missing from request.' };
     }
 
     // Obtendo dados da API
-    const exchangeData = await getExchangeRates(`${currency1}-${currency2}`);
+    const exchangeData = await getExchangeRates(`${fromCurrency}-${toCurrency}`);
     // Verificar se há dados encontrados   
     if (!exchangeData || exchangeData.length === 0) {
       return { error: 'No exchange rate data found.' };
@@ -30,9 +30,13 @@ export const verifyBusinessOperation = async (req, res) => {
       where: {currency_code:  allCodesFromAPI}
     });  
 
+    // Caso meu sistema não suporte uma das moedas recebidas
+    if(!supportedCoins.some(coin => coin.currency_code === fromCurrency) || !supportedCoins.some(coin => coin.currency_code === toCurrency)){
+      throw new Error("Currencies not supported")
+    }
+
     //Retornando moedas suportadas
     return supportedCoins;
-
   } catch(error) {
     console.error(error);
     return { error: 'Error when carrying out business operation!' };
