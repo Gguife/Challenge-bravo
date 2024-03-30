@@ -1,8 +1,8 @@
-import { coinsModel } from "../models/coinsModel.js";
+import CoinsModel from "../models/coinsModel";
 
-const findAll = async (_, res) =>{
+const findAll = async (_: any, res) =>{
   try {
-    const coins = await coinsModel.findAll();
+    const coins = await CoinsModel.findAll();
     return res.json({ coins });
   } catch (error) {
     console.log("Error finding all coins:", error);
@@ -12,7 +12,7 @@ const findAll = async (_, res) =>{
 
 const findOne = async (req, res) =>{
   try{
-    const coin = await coinsModel.findByPk(req.params.id);
+    const coin = await CoinsModel.findByPk(req.params.id);
     return res.json({ coin });
   }catch(error){
     console.log("Error finding coin:", error);
@@ -22,7 +22,7 @@ const findOne = async (req, res) =>{
 
 const add = async(req, res) =>{
   try{
-    coinsModel.create({
+    CoinsModel.create({
       name: req.body.name,
       currency_code: req.body.currency_code
     })
@@ -35,7 +35,7 @@ const add = async(req, res) =>{
 
 const update = async(req, res) =>{
   try{
-    coinsModel.update({
+    CoinsModel.update({
       name: req.body.name,
       currency_code: req.body.currency_code
     },{
@@ -52,7 +52,7 @@ const update = async(req, res) =>{
 
 const remove = async (req, res)=>{
   try{
-    coinsModel.destroy({
+    CoinsModel.destroy({
       where: {
         id: req.params.id
       }

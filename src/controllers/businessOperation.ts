@@ -1,4 +1,4 @@
-import { coinsModel } from "../models/coinsModel.js";
+import CoinsModel from "../models/coinsModel";
 import getExchangeRates from "../api/currencyLayerApi.js";
 
 
@@ -26,7 +26,7 @@ export const verifyBusinessOperation = async (req, res) => {
     ])];
 
     // Fazendo a verificação se meu sistema suporta tal moeda
-    const supportedCoins = await coinsModel.findAll({
+    const supportedCoins = await CoinsModel.findAll({
       where: {currency_code:  allCodesFromAPI}
     });  
 

@@ -1,4 +1,4 @@
-import express from "express";
+import * as express from "express";
 import coinsController from "../controllers/coins.js";
 import { verifyBusinessOperation } from "../controllers/businessOperation.js";
 import { execultCurrencyOperation } from "../controllers/currencyOperation.js";
